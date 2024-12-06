@@ -254,9 +254,7 @@ def readable_message(
         MSG += [
             defs.MSG__TEXT[LANG]["MSG3"].format(
                 county=(
-                    county
-                    if county != state
-                    else defs.MSG__TEXT[LANG]["ALL"].upper()
+                    county if county != state else defs.MSG__TEXT[LANG]["ALL"].upper()
                 ),
                 punc="," if idx != len(PSSCCC) - 1 else ".",
             )
@@ -340,9 +338,7 @@ def same_decode(
         except:
             STATION, TYPE = None, None
             format_error()
-        logging.debug(
-            " ".join(["   SAME Codes found >", str(len(PSSCCC_list))])
-        )
+        logging.debug(" ".join(["   SAME Codes found >", str(len(PSSCCC_list))]))
         US_bad_list = []
         CA_bad_list = []
         for code in PSSCCC_list:
@@ -468,9 +464,7 @@ def same_decode(
         if msgidx == -1:
             logging.warning("Valid identifer not found.")
         else:
-            logging.debug(
-                " ".join(["End of Message found >", "NNNN", str(msgidx)])
-            )
+            logging.debug(" ".join(["End of Message found >", "NNNN", str(msgidx)]))
 
 
 def parse_arguments():
@@ -519,9 +513,7 @@ def parse_arguments():
 
 def main():
     args = parse_arguments()
-    logging.basicConfig(
-        level=args.loglevel, format="%(levelname)s: %(message)s"
-    )
+    logging.basicConfig(level=args.loglevel, format="%(levelname)s: %(message)s")
     if args.msg:
         same_decode(
             args.msg,
@@ -535,9 +527,7 @@ def main():
         )
     elif args.source:
         try:
-            source_process = subprocess.Popen(
-                args.source, stdout=subprocess.PIPE
-            )
+            source_process = subprocess.Popen(args.source, stdout=subprocess.PIPE)
         except Exception as detail:
             logging.error(detail)
             return

@@ -23,9 +23,7 @@ EMAIL_PASSWORD = "your_email_password"
 def send_sms(message):
     client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
     for number in RECIPIENTS:
-        client.messages.create(
-            body=message, from_=TWILIO_PHONE_NUMBER, to=number
-        )
+        client.messages.create(body=message, from_=TWILIO_PHONE_NUMBER, to=number)
 
 
 # Send Email Alert

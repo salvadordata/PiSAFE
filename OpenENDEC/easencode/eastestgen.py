@@ -69,9 +69,7 @@ def generateEASpcmData(
         attn_tones = generateDualTonePCMData(
             853, 960, sampRate, 8, sampWidth, peakLevel, numCh
         )
-        pcm_data = (
-            pcm_data + silence + attn_tones + silence + msgaudio + silence
-        )
+        pcm_data = pcm_data + silence + attn_tones + silence + msgaudio + silence
     for i in range(3):
         pcm_data = pcm_data + eom + silence
 
@@ -104,8 +102,6 @@ if __name__ == "__main__":
     )
     data = recursiveFilterPCMaudio(4000, sampRate, sampWidth, numCh, data)
     file = wave.open("testfile-filt.wav", "wb")
-    file.setparams(
-        (numCh, sampWidth / 8, sampRate, duration * sampRate, "NONE", "")
-    )
+    file.setparams((numCh, sampWidth / 8, sampRate, duration * sampRate, "NONE", ""))
     file.writeframes(data)
     file.close()

@@ -183,9 +183,7 @@ def settings():
             [theme, language],
         )
         flash("Settings updated successfully", "success")
-    settings = query_db(
-        "SELECT theme, language FROM settings WHERE id = 1", one=True
-    )
+    settings = query_db("SELECT theme, language FROM settings WHERE id = 1", one=True)
     return render_template("settings.html", settings=settings)
 
 
