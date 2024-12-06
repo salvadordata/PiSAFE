@@ -54,7 +54,9 @@ def time_str(x, type="hour"):
 
 def get_length(TTTT):
     hh, mm = TTTT[:2], TTTT[2:]
-    return " ".join(filter(None, (time_str(int(hh)), time_str(int(mm), type="minute"))))
+    return " ".join(
+        filter(None, (time_str(int(hh)), time_str(int(mm), type="minute")))
+    )
 
 
 def county_decode(input, COUNTRY):
@@ -69,7 +71,10 @@ def county_decode(input, COUNTRY):
             county = "ALL"
         else:
             county = defs.US_SAME_CODE[SSCCC]
-        return [" ".join(filter(None, (SAME__LOC[P], county))), defs.US_SAME_AREA[SS]]
+        return [
+            " ".join(filter(None, (SAME__LOC[P], county))),
+            defs.US_SAME_AREA[SS],
+        ]
     else:
         if CCC == "000":
             county = "ALL"
@@ -249,7 +254,9 @@ def readable_message(
         MSG += [
             defs.MSG__TEXT[LANG]["MSG3"].format(
                 county=(
-                    county if county != state else defs.MSG__TEXT[LANG]["ALL"].upper()
+                    county
+                    if county != state
+                    else defs.MSG__TEXT[LANG]["ALL"].upper()
                 ),
                 punc="," if idx != len(PSSCCC) - 1 else ".",
             )
@@ -333,7 +340,9 @@ def same_decode(
         except:
             STATION, TYPE = None, None
             format_error()
-        logging.debug(" ".join(["   SAME Codes found >", str(len(PSSCCC_list))]))
+        logging.debug(
+            " ".join(["   SAME Codes found >", str(len(PSSCCC_list))])
+        )
         US_bad_list = []
         CA_bad_list = []
         for code in PSSCCC_list:
@@ -459,12 +468,16 @@ def same_decode(
         if msgidx == -1:
             logging.warning("Valid identifer not found.")
         else:
-            logging.debug(" ".join(["End of Message found >", "NNNN", str(msgidx)]))
+            logging.debug(
+                " ".join(["End of Message found >", "NNNN", str(msgidx)])
+            )
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description=defs.DESCRIPTION, prog=defs.PROGRAM, fromfile_prefix_chars="@"
+        description=defs.DESCRIPTION,
+        prog=defs.PROGRAM,
+        fromfile_prefix_chars="@",
     )
     parser.add_argument("--msg", help="message to decode")
     parser.add_argument("--same", nargs="*", help="filter by SAME code")
@@ -478,10 +491,16 @@ def parse_arguments():
         help="set log level",
     )
     parser.add_argument(
-        "--text", dest="text", action="store_true", help="output readable message"
+        "--text",
+        dest="text",
+        action="store_true",
+        help="output readable message",
     )
     parser.add_argument(
-        "--no-text", dest="text", action="store_false", help="disable readable message"
+        "--no-text",
+        dest="text",
+        action="store_false",
+        help="disable readable message",
     )
     parser.add_argument(
         "--version",
@@ -500,7 +519,9 @@ def parse_arguments():
 
 def main():
     args = parse_arguments()
-    logging.basicConfig(level=args.loglevel, format="%(levelname)s: %(message)s")
+    logging.basicConfig(
+        level=args.loglevel, format="%(levelname)s: %(message)s"
+    )
     if args.msg:
         same_decode(
             args.msg,
@@ -514,7 +535,9 @@ def main():
         )
     elif args.source:
         try:
-            source_process = subprocess.Popen(args.source, stdout=subprocess.PIPE)
+            source_process = subprocess.Popen(
+                args.source, stdout=subprocess.PIPE
+            )
         except Exception as detail:
             logging.error(detail)
             return

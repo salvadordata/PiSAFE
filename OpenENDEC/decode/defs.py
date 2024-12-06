@@ -19,7 +19,8 @@ MSG__TEXT = {
         "A": "a",
         "IN": "in",
         "": "",
-    }}
+    }
+}
 
 FIPS_DIVN = {
     "": None,

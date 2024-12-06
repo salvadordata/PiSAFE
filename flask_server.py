@@ -1,4 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    flash,
+    jsonify,
+)
 from flask_login import (
     LoginManager,
     UserMixin,
@@ -53,7 +61,9 @@ def modify_db(query, args=()):
 @login_manager.user_loader
 def user_loader(username):
     user_record = query_db(
-        "SELECT username, role FROM users WHERE username = ?", [username], one=True
+        "SELECT username, role FROM users WHERE username = ?",
+        [username],
+        one=True,
     )
     if user_record is None:
         return None
@@ -173,13 +183,16 @@ def settings():
             [theme, language],
         )
         flash("Settings updated successfully", "success")
-    settings = query_db("SELECT theme, language FROM settings WHERE id = 1", one=True)
+    settings = query_db(
+        "SELECT theme, language FROM settings WHERE id = 1", one=True
+    )
     return render_template("settings.html", settings=settings)
 
 
 def log_event(event):
     modify_db(
-        "INSERT INTO logs (event, timestamp) VALUES (?, ?)", [event, datetime.now()]
+        "INSERT INTO logs (event, timestamp) VALUES (?, ?)",
+        [event, datetime.now()],
     )
 
 
@@ -228,5 +241,7 @@ if __name__ == "__main__":
 
     print(f"Running in {ENVIRONMENT} mode...")
     app.run(
-        host="0.0.0.0", port=5000, ssl_context=("certs/server.crt", "certs/server.key")
+        host="0.0.0.0",
+        port=5000,
+        ssl_context=("certs/server.crt", "certs/server.key"),
     )
