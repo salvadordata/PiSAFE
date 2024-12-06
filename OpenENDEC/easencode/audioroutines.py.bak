@@ -100,7 +100,7 @@ def bpButterworthFilter6(fc, sampRate, sampWidth, numCh, data):
     b12 = 3.36990647e-03
 
     samples = array.array('h', data)
-    print(len(samples))
+    print len(samples)
     filtered = data[0:12]
     y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 

@@ -51,12 +51,12 @@ def main():
     msgaudio = None
 
     try:
-        for option, value in args.__dict__.items():
+        for option, value in args.__dict__.iteritems():
             if value is not None:
                 if option is 'fips':
                     value = " ".join(value)
                 if args.custom_msg is None:
-                    print(option, value)
+                    print option, value
                 if not re.match(arg_patterns[option], str(value), re.I):
                     parser.error("Invalid {0} '{1}'".format(option, value))
 
@@ -67,9 +67,9 @@ def main():
         else:
             ts_val = time.strftime('%j%H%M', time.gmtime())
         if len(args.fips) > 31:
-            print("WARNING: only 31 FIPS codes allowed. Truncating...")
+            print "WARNING: only 31 FIPS codes allowed. Truncating..."
         if len(args.callsign) > 8:
-            print("WARNING: callsign max width is 8 characters. Truncating...")
+            print "WARNING: callsign max width is 8 characters. Truncating..."
 
         if args.audioin is not None:
             infile = wave.open(args.audioin, 'rb')
@@ -90,7 +90,7 @@ def main():
         file.close()
 
     except Exception as inst:
-        print("Exception:", inst, inst.args, sys.exc_info()[1])
+        print "Exception:", inst, inst.args, sys.exc_info()[1]
 
 
 program_version = "0.1.1"
@@ -169,7 +169,7 @@ try:
         args = parser.parse_args(default_cmd)
 
 except Exception as inst:
-    print(inst)
+    print inst
     parser.exit()
 
 

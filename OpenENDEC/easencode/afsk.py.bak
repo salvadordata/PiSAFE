@@ -8,7 +8,7 @@ def generateAFSKpcmData(markF, spaceF, bitrate, sampRate, sampWidth, peakLevel, 
     pcm_data = ''
     bitstream = ''
     bitduration = 1.0 / bitrate
-    print(stringData)
+    print stringData
     for byte in stringData:
         bytebits = "{0:08b}".format(ord(byte))
         bitstream += bytebits[::-1]
