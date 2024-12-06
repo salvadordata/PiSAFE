@@ -23,7 +23,7 @@ MSG__TEXT={
 }
 
 FIPS_DIVN={
-    '' : None,
+    ''   : None,
     '02' : 'boroughs',
     '22' : 'parishes',
     '11' : None,
