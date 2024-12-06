@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-center">Manage Users</h2>
+<form method="post" class="form-inline">
+    <input type="text" name="username" class="form-control mr-2" placeholder="Username" required>
+    <input type="password" name="password" class="form-control mr-2" placeholder="Password" required>
+    <select name="role" class="form-control mr-2" required>
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+    </select>
+    <button type="submit" class="btn btn-success">Add User</button>
+</form>
+<table class="table table-striped mt-4">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user[0] }}</td>
+            <td>{{ user[1] }}</td>
+            <td>
+                {% if user[0] != 'admin' %}
+                <form action="/delete_user" method="post" style="display:inline-block;">
+                    <input type="hidden" name="username" value="{{ user[0] }}">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="/" class="btn btn-primary mt-3">Back</a>
+{% endblock %}
