@@ -27,7 +27,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 4: Generate SSL certificates securely
+      # Step 4: Generate SSL certificates dynamically
       - name: Generate SSL certificates
         run: |
           mkdir -p certs
@@ -72,3 +72,9 @@ jobs:
         with:
           name: logs
           path: ./logs
+
+      # Step 9: Cleanup SSL Certificates (Optional for Security)
+      - name: Cleanup SSL Certificates
+        if: always()
+        run: |
+          rm -f certs/server.crt certs/server.key
