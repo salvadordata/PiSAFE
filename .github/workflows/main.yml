@@ -34,7 +34,20 @@ jobs:
           openssl req -x509 -newkey rsa:2048 -keyout certs/server.key -out certs/server.crt -days 365 -nodes \
             -subj "/C=US/ST=State/L=City/O=Organization/CN=localhost"
 
-      # Step 5: Run Linting to Check Code Quality
+      # Step 5: Debugging Step - Display Environment and File Structure
+      - name: Debugging Step
+        run: |
+          echo "DEBUGGING INFORMATION:"
+          echo "Current directory contents:"
+          ls -la
+          echo "Python version:"
+          python --version
+          echo "Pip installed packages:"
+          pip freeze
+          echo "Environment variables:"
+          env
+
+      # Step 6: Run Linting to Check Code Quality
       - name: Run Linting
         run: |
           pip install flake8
@@ -42,7 +55,7 @@ jobs:
         env:
           FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
 
-      # Step 6: Run Flask Application Tests (Optional: Add Your Test Scripts)
+      # Step 7: Run Flask Application Tests (Optional: Add Your Test Scripts)
       - name: Run Flask Tests
         run: |
           python -m unittest discover -s tests
@@ -54,7 +67,7 @@ jobs:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           FCM_SERVER_KEY: ${{ secrets.FCM_SERVER_KEY }}
 
-      # Step 7: Deploy the Application (If Deployment Server is Configured)
+      # Step 8: Deploy the Application (If Deployment Server is Configured)
       - name: Deploy Application
         run: |
           gunicorn --certfile certs/server.crt --keyfile certs/server.key -b 0.0.0.0:5000 flask_server:app
@@ -66,14 +79,14 @@ jobs:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           FCM_SERVER_KEY: ${{ secrets.FCM_SERVER_KEY }}
 
-      # Step 8: Save Logs and Artifacts for Debugging (Optional)
+      # Step 9: Save Logs and Artifacts for Debugging (Optional)
       - name: Upload Workflow Logs
         uses: actions/upload-artifact@v3
         with:
           name: logs
           path: ./logs
 
-      # Step 9: Cleanup SSL Certificates (Optional for Security)
+      # Step 10: Cleanup SSL Certificates (Optional for Security)
       - name: Cleanup SSL Certificates
         if: always()
         run: |
