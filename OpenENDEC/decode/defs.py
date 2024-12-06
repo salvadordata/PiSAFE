@@ -19,8 +19,7 @@ MSG__TEXT = {
         "A": "a",
         "IN": "in",
         "": "",
-    }
-}
+    }}
 
 FIPS_DIVN = {
     "": None,
@@ -5946,7 +5945,8 @@ SAME__EEE = {
 }
 
 # This list is a NOAA list of meteorological station locations cross referenced with the FAA list of airport codes and locations.
-# Without a definative list of ICAO codes used with NWS alerts, this is the best available information. No source matches all ICAO codes in use.
+# Without a definative list of ICAO codes used with NWS alerts, this is
+# the best available information. No source matches all ICAO codes in use.
 
 ICAO_LIST = {
     "LOCATION": "US",
