@@ -1,4 +1,4 @@
-from OpenENDEC.eas_encoder import EASEncoder
+from easencode.easencode import EASEncoder  # Updated import for EASEncoder
 from gpiozero import LED
 import os
 import time
