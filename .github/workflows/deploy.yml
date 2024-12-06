@@ -1,4 +1,4 @@
-name: Deploy PiSafe
+name: Deploy PiSAFE
 
 on:
   push:
@@ -6,35 +6,36 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.9
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
 
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Test application
-      run: |
-        python -m unittest discover -s tests
+      - name: Run Linting
+        run: |
+          pip install flake8
+          flake8 .
 
-    - name: Set up SSH
-      run: |
-        mkdir -p ~/.ssh
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H <your-pi-ip> >> ~/.ssh/known_hosts
-
-    - name: Deploy to Raspberry Pi
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      run: |
-        ssh pi@<your-pi-ip> 'cd /home/pi/PiSafe && git pull && gunicorn -w 4 -b 0.0.0.0:5000 eas_flask_server:app'
+      - name: Run Flask Application
+        run: |
+          python flask_server.py
+        env:
+          FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
+          FLASK_DEBUG: ${{ secrets.FLASK_DEBUG }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          FCM_SERVER_KEY: ${{ secrets.FCM_SERVER_KEY }}
