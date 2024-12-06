@@ -18,15 +18,13 @@ SMTP_PORT = 587
 EMAIL_USER = "your_email@gmail.com"
 EMAIL_PASSWORD = "your_email_password"
 
+
 # Send SMS Alert
 def send_sms(message):
     client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
     for number in RECIPIENTS:
-        client.messages.create(
-            body=message,
-            from_=TWILIO_PHONE_NUMBER,
-            to=number
-        )
+        client.messages.create(body=message, from_=TWILIO_PHONE_NUMBER, to=number)
+
 
 # Send Email Alert
 def send_email(subject, message):
@@ -43,12 +41,14 @@ def send_email(subject, message):
         server.login(EMAIL_USER, EMAIL_PASSWORD)
         server.sendmail(EMAIL_USER, RECIPIENTS, msg.as_string())
 
+
 # Forward Alerts via MQTT
 def forward_alert():
     client = mqtt.Client()
     client.connect(BROKER, PORT, 60)
     client.publish(TOPIC, "EAS Alert Triggered!")
     client.disconnect()
+
 
 # Send Notifications
 def send_notifications(message):
@@ -57,6 +57,7 @@ def send_notifications(message):
     print("Sending email notifications...")
     send_email("Emergency Alert", message)
     print("Alert notifications sent.")
+
 
 # Main function
 if __name__ == "__main__":

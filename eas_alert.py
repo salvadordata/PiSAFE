@@ -6,6 +6,7 @@ import time
 # GPIO Configuration
 relay = LED(17)  # GPIO pin for relay
 
+
 # Generate EAS Alert
 def create_eas_alert(output_file="eas_alert.wav"):
     """
@@ -14,10 +15,12 @@ def create_eas_alert(output_file="eas_alert.wav"):
     """
     print("[INFO] Generating EAS Alert...")
     try:
-        EASEncoder.generate_alert(output_file)  # Use OpenENDEC to generate the alert
+        # Use OpenENDEC to generate the alert
+        EASEncoder.generate_alert(output_file)
         print(f"[SUCCESS] EAS Alert saved to {output_file}")
     except Exception as e:
         print(f"[ERROR] Failed to generate EAS alert: {e}")
+
 
 # Trigger GPIO Relay
 def trigger_relay():
@@ -34,6 +37,7 @@ def trigger_relay():
     except Exception as e:
         print(f"[ERROR] Failed to activate relay: {e}")
 
+
 # Play Alert Audio
 def play_alert(audio_file="eas_alert.wav"):
     """
@@ -48,6 +52,7 @@ def play_alert(audio_file="eas_alert.wav"):
         print("[SUCCESS] Audio playback complete.")
     except Exception as e:
         print(f"[ERROR] Failed to play alert audio: {e}")
+
 
 # Main Execution
 if __name__ == "__main__":
