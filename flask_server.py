@@ -1,12 +1,19 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import sqlite3
 import subprocess
 from mqtt_client import forward_alert, send_notifications
 from datetime import datetime
+import os
 
 app = Flask(__name__)
-app.secret_key = 'super_secure_secret_key_1234'  # Replace with a strong key
+
+# Environment Variables for Secure Configurations
+FLASK_SECRET_KEY = os.getenv("FLASK_SECRET_KEY", "default_secret_key")
+DEBUG_MODE = os.getenv("FLASK_DEBUG", "false").lower() == "true"
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+
+app.secret_key = FLASK_SECRET_KEY
 
 # Flask-Login setup
 login_manager = LoginManager()
@@ -41,6 +48,14 @@ def user_loader(username):
     user.id = user_record[0]
     user.role = user_record[1]
     return user
+
+@app.before_request
+def enforce_https():
+    """
+    Enforce HTTPS in production environment.
+    """
+    if ENVIRONMENT == "production" and not request.is_secure:
+        return jsonify({"error": "HTTPS is required in production"}), 403
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -123,6 +138,10 @@ def log_event(event):
     modify_db("INSERT INTO logs (event, timestamp) VALUES (?, ?)", [event, datetime.now()])
 
 if __name__ == '__main__':
+    # Failsafe for missing secrets in production
+    if ENVIRONMENT == "production" and not FLASK_SECRET_KEY:
+        raise RuntimeError("Critical FLASK_SECRET_KEY is missing in production. Aborting.")
+
     # Initialize database
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
@@ -151,4 +170,5 @@ if __name__ == '__main__':
     conn.commit()
     conn.close()
 
+    print(f"Running in {ENVIRONMENT} mode...")
     app.run(host='0.0.0.0', port=5000, ssl_context=('certs/server.crt', 'certs/server.key'))
