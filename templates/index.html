@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-center">Emergency Alert System Dashboard</h1>
+<div class="row text-center">
+    <div class="col">
+        <h3>Total Alerts</h3>
+        <p>{{ alerts_count }}</p>
+    </div>
+    <div class="col">
+        <h3>Total Users</h3>
+        <p>{{ user_count }}</p>
+    </div>
+    <div class="col">
+        <h3>System Uptime</h3>
+        <p>{{ system_uptime | round(2) }} seconds</p>
+    </div>
+</div>
+{% if current_user.role == 'admin' %}
+<form action="/trigger" method="post" class="text-center mt-4">
+    <button type="submit" class="btn btn-danger btn-lg">Trigger Alert</button>
+</form>
+{% endif %}
+{% endblock %}
