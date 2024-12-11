@@ -1,4 +1,4 @@
-![PiSAFEEASSystem](images/CB26D559-E117-4D2F-912E-FD4667BD2900.jpeg)
+![PiSAFEEASSystem](images/11199571-3BDA-41DA-A074-9468A81FC51E.jpeg)
 
 # PiSafe: A Raspberry Pi-Based Emergency Alert System
 
