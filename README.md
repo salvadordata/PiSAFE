@@ -1,3 +1,5 @@
+![PiSAFEEASSystem](images/CB26D559-E117-4D2F-912E-FD4667BD2900.jpeg)
+
 # PiSafe: A Raspberry Pi-Based Emergency Alert System
 
 **PiSafe** is a robust, feature-rich **Emergency Alert System (EAS)** built for the Raspberry Pi platform. Designed to deliver critical alerts across multiple communication channels, PiSafe ensures that your emergency notifications are timely, reliable, and versatile.
