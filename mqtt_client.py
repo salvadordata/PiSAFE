@@ -1,32 +1,39 @@
-import os
-from dotenv import load_dotenv
+import sys
+import fake_rpi
+sys.modules['RPi'] = fake_rpi.RPi
+sys.modules['RPi.GPIO'] = fake_rpi.RPi.GPIO
+import RPi.GPIO as GPIO
+from flask_socketio import SocketIO, emit
 import paho.mqtt.client as mqtt
 from twilio.rest import Client
 
-load_dotenv()
 
 # MQTT Configuration
 BROKER = "192.168.1.50"  # Replace with your MQTT broker's IP
 PORT = 1883
 TOPIC = "eas/alert"
 
+
 # Twilio Configuration (SMS, Voice Alerts)
-TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
-TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
-TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER')
-RECIPIENTS = os.getenv('ALERT_RECIPIENTS').split(',')
+TWILIO_ACCOUNT_SID = "your_account_sid"
+TWILIO_AUTH_TOKEN = "your_auth_token"
+TWILIO_PHONE_NUMBER = "+1234567890"  # Twilio phone number
+RECIPIENTS = ["+19876543210", "+12345678901"]  # Add recipient numbers
+
 
 # Email Configuration
-SMTP_SERVER = os.getenv('EMAIL_SMTP_SERVER')
-SMTP_PORT = int(os.getenv('EMAIL_SMTP_PORT'))
-EMAIL_USER = os.getenv('EMAIL_USER')
-EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
+EMAIL_USER = "your_email@gmail.com"
+EMAIL_PASSWORD = "your_email_password"
+
 
 # Send SMS Alert
 def send_sms(message):
     client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
     for number in RECIPIENTS:
         client.messages.create(body=message, from_=TWILIO_PHONE_NUMBER, to=number)
+
 
 # Send Email Alert
 def send_email(subject, message):
@@ -43,12 +50,14 @@ def send_email(subject, message):
         server.login(EMAIL_USER, EMAIL_PASSWORD)
         server.sendmail(EMAIL_USER, RECIPIENTS, msg.as_string())
 
+
 # Forward Alerts via MQTT
 def forward_alert():
     client = mqtt.Client()
     client.connect(BROKER, PORT, 60)
     client.publish(TOPIC, "EAS Alert Triggered!")
     client.disconnect()
+
 
 # Send Notifications
 def send_notifications(message):
@@ -57,6 +66,7 @@ def send_notifications(message):
     print("Sending email notifications...")
     send_email("Emergency Alert", message)
     print("Alert notifications sent.")
+
 
 # Main function
 if __name__ == "__main__":
