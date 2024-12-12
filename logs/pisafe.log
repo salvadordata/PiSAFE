@@ -1,0 +1,5 @@
+2024-12-12 15:20:53,204 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on https://127.0.0.1:5000
+ * Running on https://10.0.0.224:5000
+2024-12-12 15:20:53,210 - INFO - [33mPress CTRL+C to quit[0m
