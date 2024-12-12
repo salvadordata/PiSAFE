@@ -1,0 +1,8 @@
+*~
+*.pyc
+*.wav
+*.mp3
+build
+dist
+output
+.vscode/*

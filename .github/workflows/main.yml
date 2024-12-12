@@ -1,0 +1,102 @@
+name: Deploy PiSAFE
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set PYTHONPATH (1st addPyOnPath)
+      - name: Add PYTHONPATH to Environment
+        run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
+
+      # Step 3: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      # Step 4: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 5: Generate SSL certificates dynamically
+      - name: Generate SSL certificates
+        run: |
+          mkdir -p certs
+          openssl req -x509 -newkey rsa:2048 -keyout certs/server.key -out certs/server.crt -days 365 -nodes \
+            -subj "/C=US/ST=State/L=City/O=Organization/CN=localhost"
+
+      # Step 6: Debugging Step - Display Environment and File Structure
+      - name: Debugging Step
+        run: |
+          echo "DEBUGGING INFORMATION:"
+          echo "Current directory contents:"
+          ls -la
+          echo "Python version:"
+          python --version
+          echo "Pip installed packages:"
+          pip freeze
+          echo "Environment variables:"
+          env
+
+      # Step 7: Set PYTHONPATH (2nd addPyOnPath)
+      - name: Add PYTHONPATH after Dependencies
+        run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
+
+      # Step 8: Run Linting to Check Code Quality (Optional)
+      - name: Run Linting
+        continue-on-error: true
+        run: |
+          pip install flake8
+          flake8 .
+        env:
+          FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
+
+      # Step 9: Run Flask Application Tests (Optional: Add Your Test Scripts)
+      - name: Run Flask Tests
+        run: |
+          python -m unittest discover -s tests
+        env:
+          FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          FCM_SERVER_KEY: ${{ secrets.FCM_SERVER_KEY }}
+
+      # Step 10: Deploy the Application (If Deployment Server is Configured)
+      - name: Deploy Application
+        run: |
+          gunicorn --certfile certs/server.crt --keyfile certs/server.key -b 0.0.0.0:5000 flask_server:app
+        env:
+          FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          FCM_SERVER_KEY: ${{ secrets.FCM_SERVER_KEY }}
+
+      # Step 11: Save Logs and Artifacts for Debugging (Optional)
+      - name: Upload Workflow Logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs
+          path: ./logs
+
+      # Step 12: Cleanup SSL Certificates (Optional for Security)
+      - name: Cleanup SSL Certificates
+        if: always()
+        run: |
+          rm -f certs/server.crt certs/server.key

@@ -1,0 +1,27 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PiSAFE Control Center</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <div id="dashboard">
+        <div id="alert-panel">
+            <h2>Active Alerts</h2>
+            <div id="alert-list"></div>
+        </div>
+        <div id="sensor-panel">
+            <h2>Sensor Status</h2>
+            <div id="sensor-status"></div>
+        </div>
+        <div id="control-panel">
+            <h2>System Controls</h2>
+            <button onclick="testAlert()">Test Alert</button>
+            <button onclick="checkStatus()">Check Status</button>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
