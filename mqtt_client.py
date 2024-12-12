@@ -9,7 +9,7 @@ from twilio.rest import Client
 
 
 # MQTT Configuration
-BROKER = "192.168.1.50"  # Replace with your MQTT broker's IP
+BROKER = "localhost"  # For development testing
 PORT = 1883
 TOPIC = "eas/alert"
 
@@ -53,10 +53,13 @@ def send_email(subject, message):
 
 # Forward Alerts via MQTT
 def forward_alert():
-    client = mqtt.Client()
-    client.connect(BROKER, PORT, 60)
-    client.publish(TOPIC, "EAS Alert Triggered!")
-    client.disconnect()
+    try:
+        client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)  # Use latest API version
+        client.connect(BROKER, PORT, keepalive=5)  # Shorter timeout
+        client.publish(TOPIC, "EAS Alert Triggered!")
+        client.disconnect()
+    except Exception as e:
+        print(f"MQTT Connection Status: {str(e)}")
 
 
 # Send Notifications
