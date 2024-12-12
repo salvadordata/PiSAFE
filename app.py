@@ -1,9 +1,8 @@
-# app.py
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO
 from flask_login import LoginManager, UserMixin, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
-from OpenENDEC.decode import format_message
+from utils.eas_utils import format_message
 import os
 import json
 import logging
