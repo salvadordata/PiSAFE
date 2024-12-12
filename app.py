@@ -3,6 +3,9 @@ from flask_socketio import SocketIO
 from flask_login import LoginManager, UserMixin, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from utils.eas_utils import format_message
+from flask_talisman import Talisman
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 import os
 import json
 import logging
@@ -17,6 +20,25 @@ app.config['SECRET_KEY'] = os.urandom(24)
 socketio = SocketIO(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+# Security Headers
+Talisman(app, 
+    force_https=True,
+    strict_transport_security=True,
+    session_cookie_secure=True,
+    content_security_policy={
+        'default-src': "'self'",
+        'img-src': "'self' data:",
+        'script-src': "'self'"
+    }
+)
+
+# Rate Limiting
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["300 per hour"]
+)
 
 # Encryption Setup
 key = Fernet.generate_key()
