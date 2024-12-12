@@ -4,7 +4,10 @@ import fake_rpi
 sys.modules['RPi'] = fake_rpi.RPi
 sys.modules['RPi.GPIO'] = fake_rpi.RPi.GPIO
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> e310ef17bee2e7b01f1b226a71a3b4ef7582c4cb
 from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO
 from flask_login import LoginManager, UserMixin, login_required
