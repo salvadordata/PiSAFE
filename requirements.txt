@@ -1,18 +1,37 @@
-Flask==2.2.5
-Flask-Cors==3.0.10
-Flask-SocketIO==5.3.4
-Flask-WTF==1.1.1
-Flask-Talisman==1.0.0
-Flask-Limiter==2.0.0
-gunicorn==20.1.0
-requests==2.31.0
-Twilio==8.13.0
-python-dotenv==1.0.0
-cryptography==41.0.3
-pyOpenSSL==23.2.0
-Jinja2==3.1.2
-gpiozero==1.6.2
-flask-login==0.6.2
-numpy==1.24.3
-fake-rpi==0.7.1
-Werkzeug==2.2.3
+# Flask - Web framework for building the application
+Flask==2.2.5                      # Latest stable version compatible with Python 3.12
+
+# Flask extensions
+Flask-Cors==3.0.10                # Handles Cross-Origin Resource Sharing securely
+Flask-SocketIO==5.3.4             # For real-time communication over WebSocket
+Flask-WTF==1.1.1                  # For secure form validation
+Flask-Talisman==1.0.0             # Enforces HTTPS and secure headers
+Flask-Limiter==2.0.0              # Protects against rate-limiting attacks
+
+# MQTT support
+paho-mqtt==1.6.1                  # Reliable MQTT client library
+
+# EAS Encoding and Decoding
+dsame3==1.0.0                     # For decoding EAS messages
+freedec==2.0.0                    # For encoding EAS messages
+
+# Database and ORM
+SQLAlchemy==1.4.48                # Robust and secure database interaction
+
+# Cryptographic libraries
+cryptography==41.0.3              # For secure handling of sensitive data
+pyOpenSSL==23.2.0                 # Secure SSL/TLS implementation
+
+# Audio processing
+pydub==0.25.1                     # Manipulates audio files
+wavefile==0.2.0                   # Handles WAVE audio files
+
+# Utilities
+python-dotenv==1.0.0              # Loads environment variables securely
+requests==2.31.0                  # For making secure HTTP requests
+numpy==1.24.3                     # For numerical processing
+
+# Unit Testing and Debugging
+pytest==7.4.2                     # Framework for running unit tests
+mock==5.0.2                       # Mocking library for testing
+
