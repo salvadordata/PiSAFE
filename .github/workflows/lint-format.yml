@@ -1,0 +1,300 @@
+name: Lint and Format
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      - name: Install dependencies
+        run: |
+          pip install black autopep8 flake8
+
+      - name: Run Black
+        run: black --check .
+
+      - name: Run AutoPEP8
+        run: autopep8 --in-place --recursive .
+
+      - name: Run Flake8
+        run: flake8 .
+
+      - name: Setup ReSharper Command Line Tools
+      # You may pin to the exact commit or the version.
+      # uses: goit/setup-resharper@2b537041effd120f0590b04ba5bf5d5188b68abb
+       uses: goit/setup-resharper@v3.0.1
+       with:
+       # ReSharper CLT version to use. Example: 2019.3.4
+       version: # optional
+                   - name: Xanitizer Security Analysis
+  # You may pin to the exact commit or the version.
+  # uses: RIGS-IT/xanitizer-action@87d13138fb113b727cbe040c744a15a2b4fe5316
+  uses: RIGS-IT/xanitizer-action@v1.0.1
+  with:
+    # String which is used as input for a Xanitizer license file. Note: It is recommended to use a GitHub secret to store the license file content like XANITIZER_LICENSE and access the content in the configuration via the GitHub secret parameter. Please see https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets for details. Note: If the license is a floating license and a proxy server is used to access the license server, please specify the proxy server settings. If no settings are specified, the settings from the Xanitizer properties file will be used.
+    license: # optional
+    # Number of attempts to get a license token from the license server. Note: If the used Xanitizer license is a machine bound license, this parameter will be ignored. If the used Xanitizer license is a floating license it may happen that all tokens are in use or the connection to the license server is not available at startup. In such cases, no license token can be requested successfully from the license server to start Xanitizer and the headless process would terminate with a license error. When this parameter is set to a value greater than zero, Xanitizer attempts every minute to request a license token until the specified count has been reached. Setting this parameter to zero disables the repetition.
+    licenseServerRetryCount: # optional
+    # Relative path under $GITHUB_WORKSPACE where the project was checked out. Note: Please use the same value as for parameter `path` of the configured actions/checkout action (see https://github.com/actions/checkout#usage parameter `path`).
+    checkoutPath: # optional
+    # The output location of the overview report. This has to be either a list of files or the parameter has to be undefined or empty if no overview reports should be written. Allowed file extensions are: pdf, html, docx.
+    overviewReportOutputFile: # optional
+    # Comma separated list of output locations of the overview reports. This has to be either a list of files or the parameter has to be undefined or empty if no overview reports should be written. Allowed file extensions are: pdf, html, docx.
+    overviewReportOutputFiles: # optional
+    # The output location of the findings list report. This has to be either a list of files or the parameter has to be undefined or empty if no findings list reports should be written. Allowed file extensions are: pdf, html, docx, xml, csv, sarif.
+    findingsListReportOutputFile: # optional
+    # Comma separated list of output locations of the findings list reports. This has to be either a list of files or the parameter has to be undefined or empty if no findings list reports should be written. Allowed file extensions are: pdf, html, docx, xml, csv, sarif. Note: If no report file has been secified, i.e., neither an overview report nor a findings list report, both a Xanitizer-Findings-List.pdf and a Xanitizer-Findings-List.sarif report will be generated in the checkout directory specified by $GITHUB_WORKSPACE with the optional relative parameter `checkoutPath` as default.
+    findingsListReportOutputFiles: # optional
+    # Boolean flag specifying if only findings with problem classifications are written to the findings list report.
+    onlyProblemsInFindingsListReport: # optional, default is true
+    # Boolean flag specifying if all the details of a finding are written to the findings list report, e.g. if the output contains all steps of a path. Note: Only relevant if the file extension of the parameter `findingsListReportOutputFile` is xml, html, or sarif.
+    generateDetailsInFindingsListReport: # optional, default is true
+    # The path to the Xanitizer configuration file of the project that should be analyzed. Either this parameter or the parameter `rootDirectory` may be specified, but not both. Note: If neither the parameter `configFile` nor the parameter `rootDirectory` has been specified, the parameter `rootDirectory` is set to the checkout directory specified by $GITHUB_WORKSPACE with the optional relative parameter `checkoutPath`.
+    configFile: # optional
+    # The root directory, to be used for default set-ups. Either this parameter or the parameter `configFile` may be specified, but not both. Note: If neither the parameter `configFile` nor the parameter `rootDirectory` has been specified, the parameter `rootDirectory` is set to the checkout directory specified by $GITHUB_WORKSPACE with the optional relative parameter `checkoutPath`.
+    rootDirectory: # optional
+    # The project name that should be used. Only relevant if the parameter `rootDirectory` is specified. If not given, the simple name of the root directory is used.
+    projectName: # optional
+    # The directory where to put the generated configuration file. Only relevant if the parameter `rootDirectory` is specified. If not given, the configuration file is generated in the `rootDirectory`.
+    configFileDirectory: # optional
+    # Boolean flag specifying if an existing config file is to be overwritten. Only relevant if the parameter `rootDirectory` is specified.
+    overwriteConfigFile: # optional
+    # Boolean flag specifying whether Xanitizer uses NodeJS to compile Angular and TypeScript projects to JavaScript code itself or not. This could be a potential risk if someone has manipulated the external ng or the tsc script. If the code is already compiled to JavaScript, best with a source map, this option can be set to `false` true - enables the compilation of Angular and TypeScript code to JavaScript by Xanitizer itself false - disables the compilation of Angular and TypeScript code to JavaScript by Xanitizer itself and some Xanitizer workspace information will be generated if Angular or Typescript files are found in the project not set - if this option is not set and Angular or Typescript files are found in the project, a Xanitizer workspace error will be generated 
+    compileToJavaScript: # optional, default is true
+    # Boolean flag specifying if npm audit should be executed. The npm audit APIs can be used to report on known vulnerable node.js libraries. This requires an Internet connection and so has to be allowed explicitly. This is only relevant for NodeJS projects.
+    performNodeAudit: # optional, default is true
+    # Boolean flag specifying whether the task should fail if there are search paths configured that do not exist.
+    haltOnMissingSearchPaths: # optional
+    # A comma - separated list of issue groups that will let the task fail if for any of them, a Xanitizer error issue occurs. Possible values are ALL_ERRORS, WORKSPACE_ERRORS, CALL_GRAPH_ERRORS, ANALYSIS_ERRORS, MIGRATION_ERRORS. If the value is not set, this means that issues are not relevant for the success of the task.
+    haltOnIssues: # optional
+    # Boolean flag specifying whether the task should fail if there are findings with a rating equal or higher than the value defined for `findingsRatingThreshold`.
+    haltOnFindings: # optional
+    # A rating value. Only used if the parameter `haltOnFindings` is set.
+    findingsRatingThreshold: # optional
+    # Boolean flag specifying whether the OWASP Dependency Check repository should be updated or not. Note: The OWASP Dependency Check is based on vulnerability data stored in a local repository. It is recommended to update the local OWASP Dependency Check repository on a regular basis via remote access to the National Vulnerability Database (NIST). If a proxy server is used to access the internet, please specify the proxy server settings otherwise the settings from the Xanitizer properties file will be used.
+    updateOwaspDependencyCheckRepository: # optional
+    # The logging level to be used when running Xanitizer. Values: OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, ALL.
+    logLevel: # optional
+    # Xanitizer`s project data directory, if it is not the default one in <HOME>/.Xanitizer.
+    projectDataDirectory: # optional
+    # Boolean flag specifying whether the task should fail if there are * NEW * findings with a rating equal or higher than the value defined for `newFindingsRating`.
+    haltOnNewFindings: # optional
+    # A rating value. Only used if the parameter `haltOnNewFindings` is set.
+    newFindingsRatingThreshold: # optional
+    # Optional path to the local Maven repository. Note: If no settings are specified, the settings from the Xanitizer properties file will be used.
+    mavenRepository: # optional
+    # Boolean flag specifying whether a snapshot should be created after parsing and analyzing the current version or not.
+    createSnapshot: # optional
+    # Optional comment added to the newly created snapshot. Only relevant if the parameter `createSnapshot` is true.
+    snapshotComment: # optional
+    # The output directory of the project export. Note: If the parameter is undefined or an empty string, the project is not exported.
+    exportDirectory: # optional
+    # Boolean flag specifying if snapshots should be exported or not. The parameter is only used if an export directory is set. If the parameter is not set or empty, no snapshots are exported.
+    exportSnapshots: # optional
+    # The passphrase for the project export. The parameter is only used if an export directory is set. If the parameter is not set or empty, the exported project is not encrypted. Note: It is recommended to use a GitHub secret to store the export like XANITIZER_EXPORT_PASSPHRASE and access the content in the configuration via the GitHub secret parameter. Please see https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets for details.
+    exportPassphrase: # optional
+    # The path to an exported Xanitizer project archive file. If specified, this project is merged into the current project. This means that all more recent user adaptations, findings and issues are migrated into the current project.
+    mergedProject: # optional
+    # The passphrase for the merged project. The parameter is only necessary if the parameter `mergedProject` is set and the merged project is encrypted. Note: It is recommended to use a GitHub secret to store the export passphrase like XANITIZER_EXPORT_PASSPHRASE. and access the content in the configuration via the GitHub secret parameter. Please see https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets for details.
+    importPassphrase: # optional
+    # Optional proxy server to access the internet to update the OWASP Dependency Check repository or to request a license token from the public license server in case of a floating license via a proxy. Note: If no settings are specified, the settings from the Xanitizer properties file will be used.
+    proxyServer: # optional
+    # Optional proxy server port.
+    proxyPort: # optional
+    # Optional proxy server user name.
+    proxyUser: # optional
+    # Optional proxy server user password.
+    proxyPassword: # optional
+              - name: Lint Action with isort
+  # You may pin to the exact commit or the version.
+  # uses: Gobot1234/lint-action@856aeb03eaae5b07df162784efd0838876610ee2
+  uses: Gobot1234/lint-action@v.1.8.2
+  with:
+    # The GITHUB_TOKEN secret
+    github_token: 
+    # Whether the workflow run should also fail when linter failures are detected
+    continue_on_error: # optional, default is true
+    # Whether linters should try to fix code style issues automatically
+    auto_fix: # optional, default is false
+    # Username for auto-fix commits
+    git_name: # optional, default is Lint Action
+    # Email address for auto-fix commits
+    git_email: # optional, default is lint-action@samuelmeuli.com
+    # Template for auto-fix commit messages. The "${linter}" variable can be used to insert the name of the linter which has created the auto-fix
+    commit_message: # optional, default is Fix code style issues with ${linter}
+    # Template for the name of the check run. The "${linter}" and "${dir}" variables can be used to insert the name and directory of the linter.
+    check_name: # optional, default is ${linter}
+    # Enable or disable stylelint checks
+    stylelint: # optional, default is false
+    # Additional arguments to pass to the linter
+    stylelint_args: # optional, default is 
+    # Directory where the stylelint command should be run
+    stylelint_dir: # optional
+    # Extensions of files to check with stylelint
+    stylelint_extensions: # optional, default is css,sass,scss
+    # Shell command to prepend to the linter command
+    stylelint_command_prefix: # optional, default is 
+    # Enable or disable gofmt checks
+    gofmt: # optional, default is false
+    # Additional arguments to pass to the linter
+    gofmt_args: # optional, default is 
+    # Directory where the gofmt command should be run
+    gofmt_dir: # optional
+    # Extensions of files to check with gofmt
+    gofmt_extensions: # optional, default is go
+    # Shell command to prepend to the linter command
+    gofmt_command_prefix: # optional, default is 
+    # Enable or disable golint checks
+    golint: # optional, default is false
+    # Additional arguments to pass to the linter
+    golint_args: # optional, default is 
+    # Directory where the golint command should be run
+    golint_dir: # optional
+    # Extensions of files to check with golint
+    golint_extensions: # optional, default is go
+    # Shell command to prepend to the linter command
+    golint_command_prefix: # optional, default is 
+    # Enable or disable ESLint checks
+    eslint: # optional, default is false
+    # Additional arguments to pass to the linter
+    eslint_args: # optional, default is 
+    # Directory where the ESLint command should be run
+    eslint_dir: # optional
+    # Extensions of files to check with ESLint
+    eslint_extensions: # optional, default is js
+    # Shell command to prepend to the linter command. Will default to `npx --no-install` for NPM and `yarn run --silent` for Yarn.
+    eslint_command_prefix: # optional, default is 
+    # Enable or disable Prettier checks
+    prettier: # optional, default is false
+    # Additional arguments to pass to the linter
+    prettier_args: # optional, default is 
+    # Directory where the Prettier command should be run
+    prettier_dir: # optional
+    # Extensions of files to check with Prettier
+    prettier_extensions: # optional, default is css,html,js,json,jsx,md,sass,scss,ts,tsx,vue,yaml,yml
+    # Shell command to prepend to the linter command. Will default to `npx --no-install` for NPM and `yarn run --silent` for Yarn.
+    prettier_command_prefix: # optional, default is 
+    # Enable or disable XO checks
+    xo: # optional, default is false
+    # Additional arguments to pass to the linter
+    xo_args: # optional, default is 
+    # Directory where the XO command should be run
+    xo_dir: # optional
+    # Extensions of files to check with XO
+    xo_extensions: # optional, default is js
+    # Shell command to prepend to the linter command. Will default to `npx --no-install` for NPM and `yarn run --silent` for Yarn.
+    xo_command_prefix: # optional, default is 
+    # Enable or disable PHP_CodeSniffer checks
+    php_codesniffer: # optional, default is false
+    # Additional arguments to pass to the linter
+    php_codesniffer_args: # optional, default is 
+    # Directory where the PHP_CodeSniffer command should be run
+    php_codesniffer_dir: # optional
+    # Extensions of files to check with PHP_CodeSniffer
+    php_codesniffer_extensions: # optional, default is php
+    # Shell command to prepend to the linter command
+    php_codesniffer_command_prefix: # optional, default is 
+    # Enable or disable Black checks
+    black: # optional, default is false
+    # Additional arguments to pass to the linter
+    black_args: # optional, default is 
+    # Directory where the Black command should be run
+    black_dir: # optional
+    # Extensions of files to check with Black
+    black_extensions: # optional, default is py
+    # Shell command to prepend to the linter command
+    black_command_prefix: # optional, default is 
+    # Enable or disable Flake8 checks
+    flake8: # optional, default is false
+    # Additional arguments to pass to the linter
+    flake8_args: # optional, default is 
+    # Directory where the Flake8 command should be run
+    flake8_dir: # optional
+    # Extensions of files to check with Flake8
+    flake8_extensions: # optional, default is py
+    # Shell command to prepend to the linter command
+    flake8_command_prefix: # optional, default is 
+    # Enable or disable isort checks
+    isort: # optional, default is false
+    # Additional arguments to pass to the linter
+    isort_args: # optional, default is 
+    # Directory where the isort command should be run
+    isort_dir: # optional
+    # Extensions of files to check with isort
+    isort_extensions: # optional, default is py
+    # Shell command to prepend to the linter command
+    isort_command_prefix: # optional, default is 
+    # Enable or disable Mypy checks
+    mypy: # optional, default is false
+    # Additional arguments to pass to the linter
+    mypy_args: # optional, default is 
+    # Directory where the Mypy command should be run
+    mypy_dir: # optional
+    # Extensions of files to check with Mypy
+    mypy_extensions: # optional, default is py
+    # Shell command to prepend to the linter command
+    mypy_command_prefix: # optional, default is 
+    # Enable or disable RuboCop checks
+    rubocop: # optional, default is false
+    # Additional arguments to pass to the linter
+    rubocop_args: # optional, default is 
+    # Directory where the RuboCop command should be run
+    rubocop_dir: # optional
+    # Extensions of files to check with RuboCop
+    rubocop_extensions: # optional, default is rb
+    # Shell command to prepend to the linter command
+    rubocop_command_prefix: # optional, default is 
+    # Enable or disable SwiftFormat checks
+    swiftformat: # optional, default is false
+    # Additional arguments to pass to the linter
+    swiftformat_args: # optional, default is 
+    # Directory where the SwiftFormat command should be run
+    swiftformat_dir: # optional
+    # Extensions of files to check with SwiftFormat
+    swiftformat_extensions: # optional, default is swift
+    # Shell command to prepend to the linter command
+    swiftformat_command_prefix: # optional, default is 
+    # Enable or disable SwiftFormat checks
+    swift_format_lockwood: # optional, default is false
+    # Additional arguments to pass to the linter
+    swift_format_lockwood_args: # optional, default is 
+    # Directory where the SwiftFormat command should be run
+    swift_format_lockwood_dir: # optional
+    # Extensions of files to check with SwiftFormat
+    swift_format_lockwood_extensions: # optional, default is swift
+    # Shell command to prepend to the linter command
+    swift_format_lockwood_command_prefix: # optional, default is 
+    # Enable or disable swift-format checks
+    swift_format_official: # optional, default is false
+    # Additional arguments to pass to the linter
+    swift_format_official_args: # optional, default is 
+    # Directory where the swift-format command should be run
+    swift_format_official_dir: # optional
+    # Extrensions of files to check with swift-format
+    swift_format_official_extensions: # optional, default is swift
+    # Shell command to prepend to the linter command
+    swift_format_official_command_prefix: # optional, default is 
+    # Enable or disable SwiftLint checks
+    swiftlint: # optional, default is false
+    # Additional arguments to pass to the linter
+    swiftlint_args: # optional, default is 
+    # Directory where the SwiftLint command should be run
+    swiftlint_dir: # optional
+    # Extensions of files to check with SwiftLint
+    swiftlint_extensions: # optional, default is swift
+    # Shell command to prepend to the linter command
+    swiftlint_command_prefix: # optional, default is 
+                     
