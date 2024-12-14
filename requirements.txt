@@ -14,3 +14,4 @@ mock==5.0.2
 python-dotenv==1.0.0
 # Install dsame3 from GitHub
 git+https://github.com/jamieden/dsame3.git@main#egg=dsame3
+
